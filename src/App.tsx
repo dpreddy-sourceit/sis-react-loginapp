@@ -1,22 +1,24 @@
 import React, { useState, useEffect } from "react";
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route, Link, Navigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
-
 import AuthService from "./services/auth.service";
-
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Home from "./components/Home";
-import Profile from "./components/Profile";
 import BoardUser from "./components/BoardUser";
 import BoardModerator from "./components/BoardModerator";
 import BoardAdmin from "./components/BoardAdmin";
+import UserAvatar from "./components/UserAvatar/UserAvatar";
+import DisplayData from "./components/UserProfile/DisplayData";
 
 // import AuthVerify from "./common/AuthVerify";
 import EventBus from "./common/EventBus";
+import UserProfile from "./components/UserProfile/UserProfile";
+import ProductGeneral from "./components/Product/ProductGeneral";
+import ChangePasswordButton from "./components/UserProfile/ChangePasswordButton";
 
-let Logo1 = require('./components/images/sisimage.jpeg')
+let Logo1 = require("./components/images/sisimage.jpeg");
 const App = () => {
   const [showModeratorBoard, setShowModeratorBoard] = useState(false);
   const [showAdminBoard, setShowAdminBoard] = useState(false);
@@ -32,6 +34,7 @@ const App = () => {
     }
 
     EventBus.on("logout", () => {
+      console.log("Logging out...");
       logOut();
     });
 
@@ -47,12 +50,18 @@ const App = () => {
     setCurrentUser(undefined);
   };
 
+  console.log("SSSSSSS", currentUser);
+
   return (
     <div>
       <nav className="navbar navbar-expand navbar-dark bg-dark">
-        <Link to={"/"} className="navbar-brand">
-        <img src={Logo1} alt="Sample" style={{ height: `50px`, width:"70"}}/>
-        </Link>
+        <div className="navbar-brand">
+          <img
+            src={Logo1}
+            alt="Sample"
+            style={{ height: `50px`, width: "70" }}
+          />
+        </div>
         <div className="navbar-nav mr-auto">
           <li className="nav-item">
             <Link to={"/home"} className="nav-link">
@@ -88,14 +97,7 @@ const App = () => {
         {currentUser ? (
           <div className="navbar-nav ml-auto">
             <li className="nav-item">
-              <Link to={"/profile"} className="nav-link">
-                {currentUser.username}
-              </Link>
-            </li>
-            <li className="nav-item">
-              <a href="/login" className="nav-link" onClick={logOut}>
-                LogOut
-              </a>
+              <UserAvatar />
             </li>
           </div>
         ) : (
@@ -117,14 +119,18 @@ const App = () => {
 
       <div className="container mt-3">
         <Routes>
-          <Route exact path={"/"} element={<Home />} />
-          <Route exact path={"/home"} element={<Home />} />
-          <Route exact path="/login" element={<Login />} />
-          <Route exact path="/register" element={<Register />} />
-          <Route exact path="/profile" element={<Profile />} />
+          <Route path="/" element={<Navigate to="/home" />} />{" "}
+          <Route path={"/"} element={<Home />} />
+          <Route path={"/home"} element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/profile" element={<UserProfile />} />
           <Route path="/user" element={<BoardUser />} />
           <Route path="/mod" element={<BoardModerator />} />
           <Route path="/admin" element={<BoardAdmin />} />
+          <Route path="/product/:productId" element={<ProductGeneral />} />
+          <Route path="/changepassword" element={<ChangePasswordButton />} />
+          {/* Redirect from root to login */}
         </Routes>
       </div>
 

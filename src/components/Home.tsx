@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import UserService from "../services/user.service";
+import Metadata from "./Metadata";
 
 const Home = () => {
   const [content, setContent] = useState("");
